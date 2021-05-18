@@ -44,7 +44,50 @@ ChatBot::~ChatBot()
 
 //// STUDENT CODE
 ////
-
+//Task2:
+ChatBot::ChatBot(const ChatBot &chatbot):
+_image(nullptr),_rootNode(nullptr),_chatLogic(nullptr)
+{
+    std::cout << "ChatBot Copy Constructor" << std::endl;
+    _image = new wxBitmap(*chatbot._image);
+    _rootNode = chatbot._rootNode;
+    //_rootNode = new GraphNode(*chatbot._rootNode);   if I can use new here when chatbot doesn't own handle of _rootNode?
+    _chatLogic = chatbot._chatLogic;
+    _chatLogic->SetChatbotHandle(this); //Task4
+}
+ChatBot &ChatBot::operator= (const ChatBot &chatbot){
+    std::cout << "ChatBot Copy assignment oprator" << std::endl;
+    if(this==&chatbot) return *this;
+    delete _image;
+    _image = new wxBitmap(*chatbot._image);
+    _rootNode = chatbot._rootNode;
+    _chatLogic = chatbot._chatLogic;
+    _chatLogic->SetChatbotHandle(this);
+    return *this;
+}
+ChatBot::ChatBot(ChatBot &&chatbot):
+_image(chatbot._image) , _rootNode(chatbot._rootNode), _chatLogic(chatbot._chatLogic)
+{
+    std::cout << "ChatBot Move Constructor" << std::endl;
+    chatbot._image = NULL;
+    chatbot._rootNode = nullptr;
+    chatbot._chatLogic =  nullptr;
+    _chatLogic->SetChatbotHandle(this);
+}
+ChatBot &ChatBot::operator= (ChatBot &&chatbot){
+    std::cout << "ChatBot Copy assignment oprator" << std::endl;
+    if(this == &chatbot) return *this;
+    delete _image;
+    _rootNode = chatbot._rootNode;
+    _chatLogic = chatbot._chatLogic;
+   
+    _image = chatbot._image;
+    chatbot._image = NULL;
+    chatbot._rootNode = nullptr;
+    chatbot._chatLogic =  nullptr;
+    _chatLogic->SetChatbotHandle(this);
+    return *this;
+}
 ////
 //// EOF STUDENT CODE
 
